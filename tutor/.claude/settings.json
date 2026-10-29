@@ -1,5 +1,22 @@
 {
   "permissions": {
-    "deny": ["WebFetch", "WebSearch"]
+    "allow": ["Bash", "Read"],
+    "deny": ["WebFetch", "WebSearch"],
+    "disableAutoMode": "disable"
+  },
+  "showTurnDuration": false,
+  "promptSuggestionEnabled": false,
+  "spinnerTipsEnabled": false,
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"Student's screen (right pane):\"; tmux capture-pane -p -t school:0.1 -S -30"
+          }
+        ]
+      }
+    ]
   }
 }

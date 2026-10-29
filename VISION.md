@@ -62,7 +62,7 @@ Dockerfile   # Ubuntu + tmux + nano + Claude Code
 start.sh     # tmux: one pane runs claude, the other runs bash
 ```
 
-Run with `docker build -t terminal-tutor .` then `docker run -it --rm --hostname school terminal-tutor`.
+Run with `docker build -t terminal-tutor .` then `docker run -it --rm --hostname school --env-file .env terminal-tutor` (`.env` holds `CLAUDE_CODE_OAUTH_TOKEN`, from `claude setup-token`).
 
 ### 2. Agent: Claude Code as tutor
 

@@ -1,6 +1,6 @@
 # Terminal Tutor
 
-Read `PLAN.md` first.
+Read `VISION.md` and `ARCHITECTURE.md` first.
 
 ## Rules
 

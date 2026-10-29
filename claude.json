@@ -1,0 +1,6 @@
+{
+  "hasCompletedOnboarding": true,
+  "projects": {
+    "/opt/tutor": { "hasTrustDialogAccepted": true }
+  }
+}
