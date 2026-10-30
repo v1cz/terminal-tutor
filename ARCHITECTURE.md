@@ -22,17 +22,18 @@ docker run -it --rm --hostname school --env-file .env terminal-tutor
 
 | File | Role |
 |---|---|
-| `Dockerfile` | Ubuntu + tmux + nano + Claude Code. Creates user `student`. Copies the files below. |
+| `Dockerfile` | Ubuntu + tmux + nano + Claude Code. Creates user `student` and `~/.tmux.conf` (mouse, no status bar, focus events). Copies the files below. |
 | `start.sh` | Runs when the container starts. Opens tmux, starts both panes and the 30 s watcher. |
+| `practica/asistente-ia/` | Sample AI project the student sets up. Copied to `~/proyectos/asistente-ia`. |
 | `student.bashrc` | Startup file of the student's shell. Removes the token and tells the tutor after each command. |
 | `claude.json` | Copied to `~/.claude.json`. Skips Claude's first-run questions (onboarding, folder trust). |
-| `tutor/SYSTEM.md` | System prompt: the tutor's personality and teaching rules. Replaces Claude Code's default one. |
-| `tutor/CLAUDE.md` | The lesson: Lesson 1 steps and what to say first. |
+| `tutor/SYSTEM.md` | System prompt (Spanish): Sofía's assistant, the environment, what it receives, teaching rules. Replaces Claude Code's default one. |
+| `tutor/CLAUDE.md` | The script (Spanish): points 2 and 3 of Sofía's Linux class (paths, commands) and their practices. |
 | `tutor/.claude/settings.json` | Permissions, the hook, and UI settings that hide noise. |
 
 ## Flow
 
-1. **Start:** `start.sh` runs `claude --system-prompt-file SYSTEM.md "Hola 👋"` in `/opt/tutor`. The token logs it in, so the tutor greets first and gives task 1.
+1. **Start:** `start.sh` runs `claude --disable-slash-commands --system-prompt-file SYSTEM.md "Hola 👋"` in `/opt/tutor`. The student can't use `/` commands. The token logs it in, so the tutor greets first and gives task 1.
 2. **Student runs a command:** bash's `PROMPT_COMMAND` (in `student.bashrc`) types `[auto] Comando ejecutado` into the tutor's pane with `tmux send-keys`.
 3. **Student is quiet:** the watcher in `start.sh` checks every 30 s. If neither pane changed, it sends `[auto] 30 s sin actividad`, once until the student acts again.
 4. **Every message to the tutor** triggers a `UserPromptSubmit` hook that runs `tmux capture-pane` on the student's pane and attaches the screen. So the tutor always sees what the student did.
@@ -44,9 +45,3 @@ docker run -it --rm --hostname school --env-file .env terminal-tutor
 - **Hook:** `UserPromptSubmit` → attach the student's screen.
 - **UI:** `showTurnDuration`, `promptSuggestionEnabled`, `spinnerTipsEnabled` off.
 - **Env (in `Dockerfile`):** `CLAUDE_CODE_HIDE_CWD=1`, `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1`.
-
-## Known limits
-
-- The Claude logo and the `manual mode on` footer can't be hidden.
-- The token is removed from the student's shell, but tmux keeps a copy, so a curious student could find it.
-- `[auto]` messages are visible in the tutor's pane.

@@ -18,6 +18,12 @@ RUN useradd -m -s /bin/bash student
 USER student
 WORKDIR /home/student
 
+# tmux settings: click to switch panes, no green bar, focus events for Claude Code
+RUN printf 'set -g mouse on\nset -g status off\nset -g focus-events on\n' > ~/.tmux.conf
+
+# The project the student practises on
+COPY --chown=student:student practica/asistente-ia /home/student/proyectos/asistente-ia
+
 # 4. Install Claude Code
 RUN curl -fsSL https://claude.ai/install.sh | bash
 ENV PATH="/home/student/.local/bin:${PATH}"

@@ -11,6 +11,7 @@ Read `VISION.md` and `ARCHITECTURE.md` first.
 
 - Code, comments and docs: English.
 - What the student sees (teacher messages, prompts): Spanish.
+- Teacher instructions (`tutor/SYSTEM.md`, `tutor/CLAUDE.md`): Spanish.
 
 ## Done means
 

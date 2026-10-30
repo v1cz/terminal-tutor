@@ -2,11 +2,9 @@
 # Open the school: tutor (claude) on the left, student shell on the right.
 
 tmux new-session -d -s school -c /opt/tutor \
-  'claude --system-prompt-file /opt/tutor/SYSTEM.md "Hola 👋"'                 # left pane: tutor
+  'claude --disable-slash-commands --system-prompt-file /opt/tutor/SYSTEM.md "Bienvenido 🫡"'  # left pane: tutor, no slash commands
 tmux split-window -h -t school -c /home/student \
   'bash --rcfile /opt/student.bashrc'                                           # right pane: student
-tmux set -g mouse on                                                            # click to switch panes
-tmux set -g status off                                                          # hide the green bar
 
 # Watcher: if the student is quiet for 30 seconds, nudge the tutor once.
 (
