@@ -1,6 +1,9 @@
 #!/bin/bash
 # Open the school: tutor (claude) on the left, student shell on the right.
 
+# Pick the class: CLASE=basico uses tutor/clases/basico.md. No CLASE = default tutor/CLAUDE.md.
+[ -n "$CLASE" ] && cp "/opt/tutor/clases/$CLASE.md" /opt/tutor/CLAUDE.md
+
 tmux new-session -d -s school -c /opt/tutor \
   'claude --disable-slash-commands --system-prompt-file /opt/tutor/SYSTEM.md "Bienvenido 🫡"'  # left pane: tutor, no slash commands
 tmux split-window -h -t school -c /home/student \

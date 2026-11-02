@@ -3,7 +3,7 @@ FROM ubuntu:24.04
 
 # 2. Install the tools the lesson needs
 RUN apt-get update && apt-get install -y \
-    tmux nano curl ca-certificates \
+    tmux nano curl ca-certificates python3 \
  && rm -rf /var/lib/apt/lists/*
 
 # Use UTF-8 so tmux shows icons instead of "_"
@@ -29,7 +29,7 @@ RUN curl -fsSL https://claude.ai/install.sh | bash
 ENV PATH="/home/student/.local/bin:${PATH}"
 
 # 5. The tutor's instructions, outside the student's home
-COPY tutor /opt/tutor
+COPY --chown=student:student tutor /opt/tutor
 COPY student.bashrc /opt/student.bashrc
 
 # Skip Claude's first-run questions (theme, trust folder)
