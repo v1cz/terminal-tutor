@@ -1,11 +1,16 @@
 #!/bin/bash
 # Open the school: tutor (claude) on the left, student shell on the right.
 
-# Pick the class: CLASE=basico uses tutor/clases/basico.md. No CLASE = default tutor/CLAUDE.md.
-[ -n "$CLASE" ] && cp "/opt/tutor/clases/$CLASE.md" /opt/tutor/CLAUDE.md
+# Pick the class: CLASE=basico uses tutor/clases/basico.md. No CLASE = rutas (Sofía's practice).
+# Claude Code reads /opt/tutor/CLAUDE.md automatically, so the chosen class is copied there.
+CLASE=${CLASE:-rutas}
+if ! cp "/opt/tutor/clases/$CLASE.md" /opt/tutor/CLAUDE.md; then
+  echo "Unknown class '$CLASE'. Available: $(ls /opt/tutor/clases | sed 's/\.md$//' | tr '\n' ' ')"
+  exit 1
+fi
 
 tmux new-session -d -s school -c /opt/tutor \
-  'claude --disable-slash-commands --system-prompt-file /opt/tutor/SYSTEM.md "Bienvenido 🫡"'  # left pane: tutor, no slash commands
+  'claude --disable-slash-commands --system-prompt-file /opt/tutor/SYSTEM.md "Bienvenid@ 🫡"'  # left pane: tutor, no slash commands
 tmux split-window -h -t school -c /home/student \
   'bash --rcfile /opt/student.bashrc'                                           # right pane: student
 

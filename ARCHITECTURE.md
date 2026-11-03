@@ -13,8 +13,11 @@ One Docker container, two tmux panes: the tutor (Claude Code) on the left, the s
 
 ```
 docker build -t terminal-tutor .
-docker run -it --rm --hostname school --env-file .env terminal-tutor
+docker run -it --rm --hostname school --env-file .env terminal-tutor               # default class: rutas
+docker run -it --rm --hostname school --env-file .env -e CLASE=basico terminal-tutor  # pick a class
 ```
+
+`CLASE` is the name of a file in `tutor/clases/` without `.md`: `rutas`, `basico`, `python`.
 
 `.env` holds `CLAUDE_CODE_OAUTH_TOKEN` (from `claude setup-token`). It's in `.gitignore`.
 
@@ -28,16 +31,16 @@ docker run -it --rm --hostname school --env-file .env terminal-tutor
 | `student.bashrc` | Startup file of the student's shell. Removes the token and tells the tutor after each command. |
 | `claude.json` | Copied to `~/.claude.json`. Skips Claude's first-run questions (onboarding, folder trust). |
 | `tutor/SYSTEM.md` | System prompt (Spanish): Sofía's assistant, the environment, what it receives, teaching rules. Replaces Claude Code's default one. |
-| `tutor/CLAUDE.md` | The script (Spanish): points 2 and 3 of Sofía's Linux class (paths, commands) and their practices. |
+| `tutor/clases/*.md` | Lesson scripts (Spanish), one per class. `start.sh` copies the chosen one to `/opt/tutor/CLAUDE.md`. `rutas`: points 2 and 3 of Sofía's Linux class (paths, commands). `basico`: terminal from zero. `python`: first Python program. |
 | `tutor/.claude/settings.json` | Permissions, the hook, and UI settings that hide noise. |
 
 ## Flow
 
-1. **Start:** `start.sh` runs `claude --disable-slash-commands --system-prompt-file SYSTEM.md "Hola 👋"` in `/opt/tutor`. The student can't use `/` commands. The token logs it in, so the tutor greets first and gives task 1.
+1. **Start:** `start.sh` copies the chosen class to `/opt/tutor/CLAUDE.md`, then runs `claude --disable-slash-commands --system-prompt-file SYSTEM.md "Bienvenido 🫡"` in `/opt/tutor`. The student can't use `/` commands. The token logs it in, so the tutor greets first and gives task 1.
 2. **Student runs a command:** bash's `PROMPT_COMMAND` (in `student.bashrc`) types `[auto] Comando ejecutado` into the tutor's pane with `tmux send-keys`.
 3. **Student is quiet:** the watcher in `start.sh` checks every 30 s. If neither pane changed, it sends `[auto] 30 s sin actividad`, once until the student acts again.
 4. **Every message to the tutor** triggers a `UserPromptSubmit` hook that runs `tmux capture-pane` on the student's pane and attaches the screen. So the tutor always sees what the student did.
-5. **The tutor decides:** task done → praise + next task. Mistake → only `👀`, let them try. Stuck → hint, then answer.
+5. **The tutor decides:** task done → praise + next task. Not done yet → one very short line on whether they're on the right track, no answer. Stuck → hint, then answer.
 
 ## Tutor configuration (`tutor/.claude/settings.json`)
 

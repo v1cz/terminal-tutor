@@ -5,13 +5,13 @@ Read `VISION.md` and `ARCHITECTURE.md` first.
 ## Rules
 
 - KISS. Build the smallest thing that works. Don't overengineer.
-- Only one lesson to get started. 
+- Lessons live in `tutor/clases/`, one file per class, picked with `CLASE`.
 
 ## Language
 
 - Code, comments and docs: English.
 - What the student sees (teacher messages, prompts): Spanish.
-- Teacher instructions (`tutor/SYSTEM.md`, `tutor/CLAUDE.md`): Spanish.
+- Teacher instructions (`tutor/SYSTEM.md`, `tutor/clases/*.md`): Spanish.
 
 ## Done means
 
